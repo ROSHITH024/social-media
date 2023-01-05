@@ -1,0 +1,105 @@
+{%extends 'base.html'%}
+{%load static%}
+
+
+{%block body_block%}
+{%csrf_token%}
+<header>
+    <!-- editsaj -->
+    <div class="container card mt-3">
+       
+        <div class="profile">
+            {%if request.user.profile_pic%}
+            <div class="profile-image">
+                <!-- <img src="https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces" alt=""> -->
+                <img src="{{request.user.profile_pic.url}}" alt="" class="img-size" style="width: 160px;">
+            </div>
+            {%else%}
+            <div class="profile-image">
+                <!-- <img src="https://images.unsplash.com/photo-1513721032312-6a18a42c8763?w=152&h=152&fit=crop&crop=faces" alt=""> -->
+                <img src="/socialweb/static/images/propic.png" alt="" class="img-size" style="width: 160px;">
+            </div>
+            {%endif%}
+            <div class="profile-user-settings">
+                <h1 class="profile-user">{{request.user.first_name}} {{request.user.last_name}}</h1><br>
+                <h4 class="profile-user-name">@{{request.user}}</h4>
+                <!-- <button class="btn profile-edit-btn">Edit Profile</button> -->
+                <a href="{%url 'edit-profile' request.user.id%}" class="btn profile-edit-btn">Edit Profile</a>
+                <button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog"
+                        aria-hidden="true"></i></button>
+            </div>
+            <div class="profile-stats">
+                <ul>
+                    <li><span class="profile-stat-count">164</span> posts</li>
+                    <li><span class="profile-stat-count">188</span> followers</li>
+                    <li><span class="profile-stat-count">206</span> following</li>
+                </ul>
+            </div>
+            <div class="profile-bio">
+                {%if request.user.about%}
+                <p><span class="profile-real-name"></span> {{request.user.about}}</p>
+                {%else%}
+                <p><span class="profile-real-name"></span> Lorem ipsum dolor sit, amet consectetur
+                    adipisicing elit 📷✈️🏕️</p>
+                {%endif%}
+            </div>
+        </div>
+
+        <!-- End of profile section -->
+    </div>
+    <!-- endedit@saj -->
+    
+    <!-- End of container -->
+</header>
+
+
+<main>
+    <div class="container">
+        <div class="gallery mt-3">
+            {%for p in uposts%}
+            <div class="card mt-3" tabindex="0">
+                <div class="" style="display: inline-flex;">
+                    <div class="col-6"><p><small>@{{p.user}}</small></p></div>
+                    <div class="col-6 d-flex flex-row-reverse">
+                        <a href="{%url 'post-delete' p.id%}" class="btn"><i class="fa-regular fa-trash-can"></i></a>
+                    </div>
+                </div>
+                <small>{{p.created_date}}</small>
+                {%if p.image%}
+                <div>
+                    <img src="{{p.image.url}}" alt="" class="w-100 gallery-image" style="width: 100%; height: 390px;">
+                </div>
+                {%endif%}
+                <p>{{p.description}}</p>
+                <div class="" style="display: inline-flex;">
+                    <a href="{%url 'add-likes' p.id%}" class="btn btn-outline-danger ms-2">{{p.likes}} <i
+                            class="fa-regular fa-heart"></i></a>
+                    <!-- <button class="btn btn-outline-primary" for>comment</button> -->
+                    <label for="id_comment" class="btn btn-outline-primary ms-2"><i
+                            class="fa-regular fa-comment"></i></label>
+                </div>
+                <form action="{%url 'add-comments' p.id%}" method="post">
+                    {%csrf_token%}
+                    <input type="text" class="form-control mt-2" name="comment" id="id_comment">
+                    <button type="submit" class="btn btn-primary mt-2 mb-2 ms-1"><i
+                            class="fa-solid fa-paper-plane"></i></button>
+                </form>
+                {%for cmt in p.post_comments%}
+                <div class="card-body bg-light mt-2">
+                    <p style="display: inline;"><small>@{{cmt.user}}</small></p>
+                    <small>{{cmt.created_date}}</small>
+                    <p> {{cmt.comment}}</p>
+                    <hr class="">
+                </div>
+                {%endfor%}
+    
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+    {%endblock%}
+</main>
+
+
+
+

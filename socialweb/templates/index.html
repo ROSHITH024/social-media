@@ -1,0 +1,54 @@
+
+{%extends 'base.html'%}
+
+
+
+{%block body_block%}
+
+<!-- <h1>welcome user {{request.user}}</h1> -->
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6 mt-3">
+            <div class="mt-3">
+                {%for p in posts%}
+                <div class="card mt-3">
+                    
+                    <p><small>@{{p.user}}</small></p>
+                    <small>{{p.created_date}}</small>
+                    {%if p.image%}
+                    <div>
+                        <img src="{{p.image.url}}" alt="" class="w-100" style="width: 100%;">
+                    </div>
+                    {%endif%}
+                    <p>{{p.description}}</p>                
+                   <div class="" style="display: inline-flex;">
+                    <a href="{%url 'add-likes' p.id%}" class="btn btn-outline-danger ms-2">{{p.likes}} <i class="fa-regular fa-heart"></i></a>
+                    <!-- <button class="btn btn-outline-primary" for>comment</button> -->
+                    <label for="id_comment" class="btn btn-outline-primary ms-2"><i class="fa-regular fa-comment"></i></label>
+                   </div>
+                    <form action="{%url 'add-comments' p.id%}" method="post">
+                        {%csrf_token%}
+                        <input type="text" class="form-control mt-2" name="comment" id="id_comment" required>
+                        <button type="submit" class="btn btn-primary mt-2 mb-2 ms-1"><i class="fa-solid fa-paper-plane"></i></button>
+                    </form>
+                    {%for cmt in p.post_comments%}
+                    <div class="card-body bg-light mt-2">
+                        <div class="d-flex flex-row-reverse">
+                            <a href="{%url 'comment-delete' cmt.id%}" class="btn"><i class="fa-regular fa-trash-can"></i></a>
+                        </div>
+                        <p style="display: inline;"><small>@{{cmt.user}}</small></p>
+                        <small>{{cmt.created_date}}</small>
+                        <p> {{cmt.comment}}</p>                      
+                        <hr class="">                      
+                    </div>
+                    {%endfor%}
+                   
+                </div>
+                {%endfor%}
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+{%endblock%}
